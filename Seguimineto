@@ -1,0 +1,1923 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Triathlon + Marathon Dashboard v4.2 PRO</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+:root {
+  --primary: #1e6091;
+  --accent: #2a9d8f;
+  --secondary: #e76f51;
+  --success: #2a9d8f;
+  --warning: #e9c46a;
+  --danger: #e76f51;
+  --bg-light: #f8f9fa;
+  --bg-dark: #121212;
+  --card-light: #ffffff;
+  --card-dark: #1e1e1e;
+  --text-light: #2d3748;
+  --text-dark: #e2e8f0;
+  --border-light: #e2e8f0;
+  --border-dark: #2d3748;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+.dashboard-container {
+  display: flex;
+  min-height: 100vh;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+}
+
+/* Sidebar Deportivo */
+.sidebar {
+  width: 280px;
+  background: linear-gradient(180deg, var(--primary) 0%, #0a3d62 100%);
+  color: white;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 4px 0 20px rgba(0,0,0,0.1);
+  position: relative;
+  z-index: 100;
+}
+
+.sidebar-header {
+  padding: 2rem 1.5rem 1rem;
+  text-align: center;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.sidebar-header h1 {
+  margin: 0;
+  font-size: 1.4rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.sidebar-header .version {
+  font-size: 0.7rem;
+  opacity: 0.8;
+  margin-top: 5px;
+}
+
+.tabs {
+  flex: 1;
+  padding: 1rem 0;
+}
+
+.tab-btn {
+  width: 100%;
+  padding: 1.2rem 1.5rem;
+  text-align: left;
+  border: none;
+  background: transparent;
+  color: white;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-left: 4px solid transparent;
+}
+
+.tab-btn:hover {
+  background: rgba(255,255,255,0.1);
+  border-left-color: var(--accent);
+}
+
+.tab-btn.active {
+  background: rgba(255,255,255,0.15);
+  border-left-color: var(--accent);
+  font-weight: 600;
+}
+
+.tab-btn i {
+  width: 20px;
+  text-align: center;
+}
+
+.sidebar-footer {
+  padding: 1.5rem;
+  text-align: center;
+  border-top: 1px solid rgba(255,255,255,0.1);
+  font-size: 0.8rem;
+  opacity: 0.8;
+}
+
+/* Main Content */
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-light);
+}
+
+.content-header {
+  background: white;
+  padding: 1.5rem 2rem;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  border-bottom: 1px solid var(--border-light);
+}
+
+.content-header h2 {
+  margin: 0;
+  color: var(--primary);
+  font-size: 1.8rem;
+  font-weight: 700;
+}
+
+.content-body {
+  flex: 1;
+  padding: 2rem;
+  overflow-y: auto;
+}
+
+/* Cards Deportivas */
+.card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  border: 1px solid var(--border-light);
+  margin-bottom: 2rem;
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+}
+
+.card-header {
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  color: white;
+  padding: 1.2rem 1.5rem;
+  font-weight: 600;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.card-body {
+  padding: 1.5rem;
+}
+
+/* Week Selector */
+.week-selector {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  background: white;
+  padding: 1rem 1.5rem;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.week-selector label {
+  font-weight: 600;
+  color: var(--primary);
+}
+
+.week-selector select {
+  padding: 0.5rem 1rem;
+  border: 2px solid var(--border-light);
+  border-radius: 8px;
+  background: white;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: border-color 0.3s ease;
+}
+
+.week-selector select:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+/* Diet Styles */
+.diet-option-selector {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  background: white;
+  padding: 1.5rem;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.diet-option {
+  flex: 1;
+  text-align: center;
+  padding: 1rem;
+  border: 2px solid var(--border-light);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.diet-option:hover {
+  border-color: var(--accent);
+}
+
+.diet-option.selected {
+  border-color: var(--primary);
+  background: rgba(30, 96, 145, 0.1);
+}
+
+.diet-option h3 {
+  margin: 0 0 0.5rem 0;
+  color: var(--primary);
+}
+
+.diet-option .macros {
+  font-size: 0.8rem;
+  color: var(--text-light);
+}
+
+.meal-section {
+  background: white;
+  border-radius: 10px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  border-left: 4px solid var(--accent);
+}
+
+.meal-header {
+  display: flex;
+  align-items: center;
+  justify-content: between;
+  margin-bottom: 1rem;
+}
+
+.meal-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.meal-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.meal-checkbox input[type="checkbox"] {
+  transform: scale(1.3);
+}
+
+.meal-items {
+  padding-left: 1.5rem;
+}
+
+.meal-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 0.5rem;
+  padding: 0.5rem;
+  border-radius: 6px;
+  transition: background 0.3s ease;
+}
+
+.meal-item:hover {
+  background: #f8f9fa;
+}
+
+.meal-item input[type="checkbox"] {
+  transform: scale(1.2);
+}
+
+.meal-item.completed {
+  background: #d4edda;
+  text-decoration: line-through;
+  color: #155724;
+}
+
+.meal-notes {
+  margin-top: 1rem;
+  padding: 1rem;
+  background: #fff3cd;
+  border-radius: 6px;
+  border-left: 4px solid #ffc107;
+}
+
+.meal-notes textarea {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #ffeaa7;
+  border-radius: 4px;
+  resize: vertical;
+  font-family: inherit;
+}
+
+/* Diet Table */
+.diet-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1rem 0;
+}
+
+.diet-table th {
+  background: var(--accent);
+  color: white;
+  padding: 12px 8px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.diet-table td {
+  padding: 10px 8px;
+  border-bottom: 1px solid var(--border-light);
+  vertical-align: middle;
+}
+
+.diet-table tr:hover {
+  background: #f8f9fa;
+}
+
+.diet-table input[type="checkbox"] {
+  transform: scale(1.3);
+}
+
+.diet-table select {
+  padding: 6px 10px;
+  border: 1px solid var(--border-light);
+  border-radius: 6px;
+  font-size: 0.9rem;
+}
+
+/* Progress Summary */
+.progress-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin: 2rem 0;
+}
+
+.progress-card {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 10px;
+  text-align: center;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  border: 1px solid var(--border-light);
+}
+
+.progress-card .number {
+  font-size: 2rem;
+  font-weight: bold;
+  color: var(--primary);
+  margin-bottom: 0.5rem;
+}
+
+.progress-card .label {
+  font-size: 0.9rem;
+  color: var(--text-light);
+}
+
+/* Buttons */
+.btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: white;
+}
+
+.btn-primary:hover {
+  background: #1a5276;
+  transform: translateY(-1px);
+}
+
+.btn-success {
+  background: var(--success);
+  color: white;
+}
+
+.btn-success:hover {
+  background: #23857a;
+  transform: translateY(-1px);
+}
+
+.btn-danger {
+  background: var(--danger);
+  color: white;
+}
+
+.btn-danger:hover {
+  background: #d35449;
+  transform: translateY(-1px);
+}
+
+/* Hidden */
+.hidden {
+  display: none;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .dashboard-container {
+    flex-direction: column;
+  }
+  
+  .sidebar {
+    width: 100%;
+  }
+  
+  .tabs {
+    display: flex;
+    overflow-x: auto;
+  }
+  
+  .tab-btn {
+    flex-shrink: 0;
+    border-left: none;
+    border-bottom: 4px solid transparent;
+  }
+  
+  .tab-btn.active {
+    border-left: none;
+    border-bottom-color: var(--accent);
+  }
+}
+
+@media (max-width: 768px) {
+  .content-body {
+    padding: 1rem;
+  }
+  
+  .progress-summary {
+    grid-template-columns: 1fr;
+  }
+  
+  .diet-option-selector {
+    flex-direction: column;
+  }
+  
+  .meal-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+}
+
+/* Dark Mode */
+@media (prefers-color-scheme: dark) {
+  .main-content {
+    background: var(--bg-dark);
+  }
+  
+  .content-header {
+    background: var(--card-dark);
+    color: var(--text-dark);
+  }
+  
+  .card, .day-block, .progress-card, .diet-option, .meal-section {
+    background: var(--card-dark);
+    border-color: var(--border-dark);
+    color: var(--text-dark);
+  }
+  
+  .diet-table tr:hover,
+  .meal-item:hover {
+    background: #2d3748;
+  }
+  
+  .week-selector, .diet-table select, .meal-notes textarea {
+    background: var(--card-dark);
+    border-color: var(--border-dark);
+    color: var(--text-dark);
+  }
+  
+  .meal-item.completed {
+    background: #1e3a1e;
+    color: #90ee90;
+  }
+  
+  .meal-notes {
+    background: #332c1a;
+    border-left-color: #e9c46a;
+  }
+}
+</style>
+</head>
+<body>
+<div class="dashboard-container">
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <h1>
+        <i class="fas fa-dumbbell"></i>
+        Tri+Mar PRO
+      </h1>
+      <div class="version">v4.2 - Athlete Edition</div>
+    </div>
+    
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="planner">
+        <i class="fas fa-dumbbell"></i>Entrenamiento
+      </button>
+      <button class="tab-btn" data-tab="diet">
+        <i class="fas fa-apple-alt"></i>Dieta
+      </button>
+      <button class="tab-btn" data-tab="body">
+        <i class="fas fa-chart-line"></i>Estadísticas Corporales
+      </button>
+      <button class="tab-btn" data-tab="charts">
+        <i class="fas fa-chart-bar"></i>Gráficas
+      </button>
+      <button class="tab-btn" data-tab="settings">
+        <i class="fas fa-cog"></i>Ajustes
+      </button>
+    </div>
+    
+    <div class="sidebar-footer">
+      <i class="fas fa-heartbeat"></i> Athlete Mode Active
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <div class="content-header">
+      <h2 id="currentTabTitle">Planificador Semanal</h2>
+    </div>
+    
+    <div class="content-body">
+      <!-- Weekly Planner -->
+      <div class="content" id="planner">
+        <div class="week-selector">
+          <label for="weekSelect"><i class="fas fa-calendar-week"></i> Semana:</label>
+          <select id="weekSelect"></select>
+        </div>
+        <div id="weekContainer"></div>
+      </div>
+
+      <!-- Diet Tab - SISTEMA COMPLETO MEJORADO -->
+      <div class="content hidden" id="diet">
+        <div class="card">
+          <div class="card-header">
+            <i class="fas fa-apple-alt"></i> Control de Dieta - Seguimiento por Comidas
+          </div>
+          <div class="card-body">
+            <!-- Selector de Semana -->
+            <div class="week-selector">
+              <label for="dietWeekSelect"><i class="fas fa-calendar-week"></i> Semana de Dieta:</label>
+              <select id="dietWeekSelect"></select>
+            </div>
+
+            <!-- Selector de Día -->
+            <div class="week-selector">
+              <label for="dietDaySelect"><i class="fas fa-calendar-day"></i> Día:</label>
+              <select id="dietDaySelect">
+                <option value="0">Lunes</option>
+                <option value="1">Martes</option>
+                <option value="2">Miércoles</option>
+                <option value="3">Jueves</option>
+                <option value="4">Viernes</option>
+                <option value="5">Sábado</option>
+                <option value="6">Domingo</option>
+              </select>
+            </div>
+
+            <!-- Resumen de Progreso -->
+            <div class="progress-summary">
+              <div class="progress-card">
+                <div class="number" id="completedMeals">0/5</div>
+                <div class="label">Comidas Completadas</div>
+              </div>
+              <div class="progress-card">
+                <div class="number" id="completionRate">0%</div>
+                <div class="label">Tasa de Cumplimiento</div>
+              </div>
+              <div class="progress-card">
+                <div class="number" id="currentOption">-</div>
+                <div class="label">Opción de Dieta</div>
+              </div>
+            </div>
+
+            <!-- Selector de Opción de Dieta -->
+            <div class="diet-option-selector">
+              <div class="diet-option selected" onclick="selectDietOption(1)">
+                <h3>🥗 Opción 1 - Standard</h3>
+                <div class="macros">HC 63g | P 49g | G 12g</div>
+              </div>
+              <div class="diet-option" onclick="selectDietOption(2)">
+                <h3>💪 Opción 2 - Volumen</h3>
+                <div class="macros">HC +30% | P +20% | G +15%</div>
+              </div>
+            </div>
+
+            <!-- DIETA OPCIÓN 1 -->
+            <div class="diet-option-content" id="diet-option-1">
+              <!-- Desayuno -->
+              <div class="meal-section">
+                <div class="meal-header">
+                  <div class="meal-title">
+                    <i class="fas fa-sun"></i> Desayuno
+                  </div>
+                  <div class="meal-checkbox">
+                    <input type="checkbox" id="breakfast-1-completed" data-meal="breakfast" data-option="1" onchange="saveDietProgress()">
+                    <label for="breakfast-1-completed">Comida Completada</label>
+                  </div>
+                </div>
+                <div class="meal-items">
+                  <div class="meal-item" data-item="breakfast-1-1">
+                    <input type="checkbox" onchange="toggleMealItem(this)">
+                    <span>50g de pan (centeno, espelta, integral)</span>
+                  </div>
+                  <div class="meal-item" data-item="breakfast-1-2">
+                    <input type="checkbox" onchange="toggleMealItem(this)">
+                    <span>1 huevo + 120g de claras O 60g de jamón serrano</span>
+                  </div>
+                  <div class="meal-item" data-item="breakfast-1-3">
+                    <input type="checkbox" onchange="toggleMealItem(this)">
+                    <span>1 manzana o 80g frutos rojos</span>
+                  </div>
+                  <div class="meal-item" data-item="breakfast-1-4">
+                    <input type="checkbox" onchange="toggleMealItem(this)">
+                    <span>5ml de AOVE</span>
+                  </div>
+                  <div class="meal-item" data-item="breakfast-1-5">
+                    <input type="checkbox" onchange="toggleMealItem(this)">
+                    <span>Café con 150ml de bebida de almendras zero</span>
+                  </div>
+                </div>
+                <div class="meal-notes">
+                  <textarea placeholder="Notas sobre el desayuno (ej: no tomé café, añadí azúcar...)" 
+                            data-meal="breakfast" data-option="1" oninput="saveDietProgress()"></textarea>
+                </div>
+              </div>
+
+              <!-- Media Mañana -->
+              <div class="meal-section">
+                <div class="meal-header">
+                  <div class="meal-title">
+                    <i class="fas fa-coffee"></i> Media Mañana
+                  </div>
+                  <div class="meal-checkbox">
+                    <input type="checkbox" id="snack1-1-completed" data-meal="snack1" data-option="1" onchange="saveDietProgress()">
+                    <label for="snack1-1-completed">Comida Completada</label>
+                  </div>
+                </div>
+                <div class="meal-items">
+                  <div class="meal-item" data-item="snack1-1-1">
+                    <input type="checkbox" onchange="toggleMealItem(this)">
+                    <span>250g de yogur +Proteína Hacendado natural</span>
+                  </div>
+                  <div class="meal-item" data-item="snack1-1-2">
+                    <input type="checkbox" onchange="toggleMealItem(this)">
+                    <span>25g de cereal Mix 0% Hacendado</span>
+                  </div>
+                  <div class="meal-item" data-item="snack1-1-3">
+                    <input type="checkbox" onchange="toggleMealItem(this)">
+                    <span>15g de crema de cacahuetes o de frutos secos</span>
+                  </div>
+                </div>
+                <div class="meal-notes">
+                  <textarea placeholder="Notas sobre media mañana..." 
+                            data-meal="snack1" data-option="1" oninput="saveDietProgress()"></textarea>
+                </div>
+              </div>
+
+              <!-- Comida -->
+              <div class="meal-section">
+                <div class="meal-header">
+                  <div class="meal-title">
+                    <i class="fas fa-utensils"></i> Comida
+                  </div>
+                  <div class="meal-checkbox">
+                    <input type="checkbox" id="lunch-1-completed" data-meal="lunch" data-option="1" onchange="saveDietProgress()">
+                    <label for="lunch-1-completed">Comida Completada</label>
+                  </div>
+                </div>
+                <div class="meal-items">
+                  <div class="meal-item" data-item="lunch-1-1">
+                    <input type="checkbox" onchange="toggleMealItem(this)">
+                    <span>5ml de aceite de oliva (AOVE)</span>
+                  </div>
+                  <div class="meal-item" data-item="lunch-1-2">
+                    <input type="checkbox" onchange="toggleMealItem(this)">
+                    <span>Verdura o ensalada al gusto</span>
+                  </div>
+                  <div class="meal-item" data-item="lunch-1-3">
+                    <input type="checkbox" onchange="toggleMealItem(this)">
+                    <span>170g de pechuga de pollo o pavo O 170g de ternera</span>
+                  </div>
+                  <div class="meal-item" data-item="lunch-1-4">
+                    <input type="checkbox" onchange="toggleMealItem(this)">
+                    <span>200g de patata o boniato O 50g de arroz basmati blanco</span>
+                  </div>
+                  <div class="meal-item" data-item="lunch-1-5">
+                    <input type="checkbox" onchange="toggleMealItem(this)">
+                    <span>Café (opcional)</span>
+                  </div>
+                </div>
+                <div class="meal-notes">
+                  <textarea placeholder="Notas sobre la comida..." 
+                            data-meal="lunch" data-option="1" oninput="saveDietProgress()"></textarea>
+                </div>
+              </div>
+
+              <!-- Merienda -->
+              <div class="meal-section">
+                <div class="meal-header">
+                  <div class="meal-title">
+                    <i class="fas fa-clock"></i> Merienda
+                  </div>
+                  <div class="meal-checkbox">
+                    <input type="checkbox" id="snack2-1-completed" data-meal="snack2" data-option="1" onchange="saveDietProgress()">
+                    <label for="snack2-1-completed">Comida Completada</label>
+                  </div>
+                </div>
+                <div class="meal-items">
+                  <div class="meal-item" data-item="snack2-1-1">
+                    <input type="checkbox" onchange="toggleMealItem(this)">
+                    <span>1 unidad de pan thins multicereal</span>
+                  </div>
+                  <div class="meal-item" data-item="snack2-1-2">
+                    <input type="checkbox" onchange="toggleMealItem(this)">
+                    <span>80g de fiambre de pollo o pavo (más de 83%)</span>
+                  </div>
+                  <div class="meal-item" data-item="snack2-1-3">
+                    <input type="checkbox" onchange="toggleMealItem(this)">
+                    <span>1 yogur pequeño +Proteína Hacendado (de sabores)</span>
+                  </div>
+                </div>
+                <div class="meal-notes">
+                  <textarea placeholder="Notas sobre la merienda..." 
+                            data-meal="snack2" data-option="1" oninput="saveDietProgress()"></textarea>
+                </div>
+              </div>
+
+              <!-- Cena -->
+              <div class="meal-section">
+                <div class="meal-header">
+                  <div class="meal-title">
+                    <i class="fas fa-moon"></i> Cena
+                  </div>
+                  <div class="meal-checkbox">
+                    <input type="checkbox" id="dinner-1-completed" data-meal="dinner" data-option="1" onchange="saveDietProgress()">
+                    <label for="dinner-1-completed">Comida Completada</label>
+                  </div>
+                </div>
+                <div class="meal-items">
+                  <div class="meal-item" data-item="dinner-1-1">
+                    <input type="checkbox" onchange="toggleMealItem(this)">
+                    <span>Ensalada o verdura al gusto</span>
+                  </div>
+                  <div class="meal-item" data-item="dinner-1-2">
+                    <input type="checkbox" onchange="toggleMealItem(this)">
+                    <span>200g de patata o boniato</span>
+                  </div>
+                  <div class="meal-item" data-item="dinner-1-3">
+                    <input type="checkbox" onchange="toggleMealItem(this)">
+                    <span>5ml de AOVE</span>
+                  </div>
+                  <div class="meal-item" data-item="dinner-1-4">
+                    <input type="checkbox" onchange="toggleMealItem(this)">
+                    <span>150g de pechuga de pollo o pavo O 180g de pescado blanco</span>
+                  </div>
+                  <div class="meal-item" data-item="dinner-1-5">
+                    <input type="checkbox" onchange="toggleMealItem(this)">
+                    <span>1 gelatina +Proteína Hacendado</span>
+                  </div>
+                </div>
+                <div class="meal-notes">
+                  <textarea placeholder="Notas sobre la cena..." 
+                            data-meal="dinner" data-option="1" oninput="saveDietProgress()"></textarea>
+                </div>
+              </div>
+            </div>
+
+            <!-- DIETA OPCIÓN 2 -->
+            <div class="diet-option-content hidden" id="diet-option-2">
+              <!-- Desayuno Opción 2 -->
+              <div class="meal-section">
+                <div class="meal-header">
+                  <div class="meal-title">
+                    <i class="fas fa-sun"></i> Desayuno
+                  </div>
+                  <div class="meal-checkbox">
+                    <input type="checkbox" id="breakfast-2-completed" data-meal="breakfast" data-option="2" onchange="saveDietProgress()">
+                    <label for="breakfast-2-completed">Comida Completada</label>
+                  </div>
+                </div>
+                <div class="meal-items">
+                  <div class="meal-item" data-item="breakfast-2-1">
+                    <input type="checkbox" onchange="toggleMealItem(this)">
+                    <span>90g de pan (centeno, espelta, integral)</span>
+                  </div>
+                  <div class="meal-item" data-item="breakfast-2-2">
+                    <input type="checkbox" onchange="toggleMealItem(this)">
+                    <span>1 huevo + 120g de claras O 60g de jamón serrano</span>
+                  </div>
+                  <div class="meal-item" data-item="breakfast-2-3">
+                    <input type="checkbox" onchange="toggleMealItem(this)">
+                    <span>1 manzana</span>
+                  </div>
+                  <div class="meal-item" data-item="breakfast-2-4">
+                    <input type="checkbox" onchange="toggleMealItem(this)">
+                    <span>5ml de AOVE</span>
+                  </div>
+                  <div class="meal-item" data-item="breakfast-2-5">
+                    <input type="checkbox" onchange="toggleMealItem(this)">
+                    <span>Café con 150ml de bebida de almendras zero</span>
+                  </div>
+                </div>
+                <div class="meal-notes">
+                  <textarea placeholder="Notas sobre el desayuno..." 
+                            data-meal="breakfast" data-option="2" oninput="saveDietProgress()"></textarea>
+                </div>
+              </div>
+
+              <!-- Media Mañana Opción 2 -->
+              <div class="meal-section">
+                <div class="meal-header">
+                  <div class="meal-title">
+                    <i class="fas fa-coffee"></i> Media Mañana
+                  </div>
+                  <div class="meal-checkbox">
+                    <input type="checkbox" id="snack1-2-completed" data-meal="snack1" data-option="2" onchange="saveDietProgress()">
+                    <label for="snack1-2-completed">Comida Completada</label>
+                  </div>
+                </div>
+                <div class="meal-items">
+                  <div class="meal-item" data-item="snack1-2-1">
+                    <input type="checkbox" onchange="toggleMealItem(this)">
+                    <span>250g de yogur +Proteína Hacendado natural</span>
+                  </div>
+                  <div class="meal-item" data-item="snack1-2-2">
+                    <input type="checkbox" onchange="toggleMealItem(this)">
+                    <span>25g de cereal Mix 0% Hacendado</span>
+                  </div>
+                  <div class="meal-item" data-item="snack1-2-3">
+                    <input type="checkbox" onchange="toggleMealItem(this)">
+                    <span>1 plátano</span>
+                  </div>
+                  <div class="meal-item" data-item="snack1-2-4">
+                    <input type="checkbox" onchange="toggleMealItem(this)">
+                    <span>15g de crema de cacahuetes o de frutos secos</span>
+                  </div>
+                </div>
+                <div class="meal-notes">
+                  <textarea placeholder="Notas sobre media mañana..." 
+                            data-meal="snack1" data-option="2" oninput="saveDietProgress()"></textarea>
+                </div>
+              </div>
+
+              <!-- Comida Opción 2 -->
+              <div class="meal-section">
+                <div class="meal-header">
+                  <div class="meal-title">
+                    <i class="fas fa-utensils"></i> Comida
+                  </div>
+                  <div class="meal-checkbox">
+                    <input type="checkbox" id="lunch-2-completed" data-meal="lunch" data-option="2" onchange="saveDietProgress()">
+                    <label for="lunch-2-completed">Comida Completada</label>
+                  </div>
+                </div>
+                <div class="meal-items">
+                  <div class="meal-item" data-item="lunch-2-1">
+                    <input type="checkbox" onchange="toggleMealItem(this)">
+                    <span>5ml de aceite de oliva (AOVE)</span>
+                  </div>
+                  <div class="meal-item" data-item="lunch-2-2">
+                    <input type="checkbox" onchange="toggleMealItem(this)">
+                    <span>Verdura o ensalada al gusto</span>
+                  </div>
+                  <div class="meal-item" data-item="lunch-2-3">
+                    <input type="checkbox" onchange="toggleMealItem(this)">
+                    <span>170g de pechuga de pollo o pavo O 170g de ternera</span>
+                  </div>
+                  <div class="meal-item" data-item="lunch-2-4">
+                    <input type="checkbox" onchange="toggleMealItem(this)">
+                    <span>350g de patata o boniato O 80g de arroz basmati blanco</span>
+                  </div>
+                  <div class="meal-item" data-item="lunch-2-5">
+                    <input type="checkbox" onchange="toggleMealItem(this)">
+                    <span>Café (opcional)</span>
+                  </div>
+                </div>
+                <div class="meal-notes">
+                  <textarea placeholder="Notas sobre la comida..." 
+                            data-meal="lunch" data-option="2" oninput="saveDietProgress()"></textarea>
+                </div>
+              </div>
+
+              <!-- Merienda Opción 2 -->
+              <div class="meal-section">
+                <div class="meal-header">
+                  <div class="meal-title">
+                    <i class="fas fa-clock"></i> Merienda
+                  </div>
+                  <div class="meal-checkbox">
+                    <input type="checkbox" id="snack2-2-completed" data-meal="snack2" data-option="2" onchange="saveDietProgress()">
+                    <label for="snack2-2-completed">Comida Completada</label>
+                  </div>
+                </div>
+                <div class="meal-items">
+                  <div class="meal-item" data-item="snack2-2-1">
+                    <input type="checkbox" onchange="toggleMealItem(this)">
+                    <span>2 unidades de pan thins multicereal</span>
+                  </div>
+                  <div class="meal-item" data-item="snack2-2-2">
+                    <input type="checkbox" onchange="toggleMealItem(this)">
+                    <span>80g de fiambre de pollo o pavo (más de 83%)</span>
+                  </div>
+                  <div class="meal-item" data-item="snack2-2-3">
+                    <input type="checkbox" onchange="toggleMealItem(this)">
+                    <span>1 yogur pequeño +Proteína Hacendado (de sabores)</span>
+                  </div>
+                </div>
+                <div class="meal-notes">
+                  <textarea placeholder="Notas sobre la merienda..." 
+                            data-meal="snack2" data-option="2" oninput="saveDietProgress()"></textarea>
+                </div>
+              </div>
+
+              <!-- Cena Opción 2 -->
+              <div class="meal-section">
+                <div class="meal-header">
+                  <div class="meal-title">
+                    <i class="fas fa-moon"></i> Cena
+                  </div>
+                  <div class="meal-checkbox">
+                    <input type="checkbox" id="dinner-2-completed" data-meal="dinner" data-option="2" onchange="saveDietProgress()">
+                    <label for="dinner-2-completed">Comida Completada</label>
+                  </div>
+                </div>
+                <div class="meal-items">
+                  <div class="meal-item" data-item="dinner-2-1">
+                    <input type="checkbox" onchange="toggleMealItem(this)">
+                    <span>Ensalada o verdura al gusto</span>
+                  </div>
+                  <div class="meal-item" data-item="dinner-2-2">
+                    <input type="checkbox" onchange="toggleMealItem(this)">
+                    <span>300g de patata o boniato</span>
+                  </div>
+                  <div class="meal-item" data-item="dinner-2-3">
+                    <input type="checkbox" onchange="toggleMealItem(this)">
+                    <span>5ml de AOVE</span>
+                  </div>
+                  <div class="meal-item" data-item="dinner-2-4">
+                    <input type="checkbox" onchange="toggleMealItem(this)">
+                    <span>150g de pechuga de pollo o pavo O 180g de pescado blanco</span>
+                  </div>
+                  <div class="meal-item" data-item="dinner-2-5">
+                    <input type="checkbox" onchange="toggleMealItem(this)">
+                    <span>1 gelatina +Proteína Hacendado</span>
+                  </div>
+                </div>
+                <div class="meal-notes">
+                  <textarea placeholder="Notas sobre la cena..." 
+                            data-meal="dinner" data-option="2" oninput="saveDietProgress()"></textarea>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Body Stats -->
+      <div class="content hidden" id="body">
+        <div class="card">
+          <div class="card-header">
+            <i class="fas fa-chart-line"></i> Estadísticas Corporales Completas
+          </div>
+          <div class="card-body">
+            <div class="stats-grid" id="bodyStatsGrid">
+              <!-- Las tarjetas se generarán dinámicamente -->
+            </div>
+            
+            <button class="btn btn-success" onclick="addBodyRow()">
+              <i class="fas fa-plus"></i> Añadir Registro
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Charts -->
+      <div class="content hidden" id="charts">
+        <div class="charts-container">
+          <div class="chart-card">
+            <h3>Volumen de Entrenamiento</h3>
+            <canvas id="volumeChart" width="400" height="300"></canvas>
+          </div>
+          <div class="chart-card">
+            <h3>Cumplimiento de Dieta</h3>
+            <canvas id="dietChart" width="400" height="300"></canvas>
+          </div>
+          <div class="chart-card">
+            <h3>Deportes Aeróbicos</h3>
+            <canvas id="aerobicChart" width="400" height="300"></canvas>
+          </div>
+          <div class="chart-card">
+            <h3>Evolución Corporal</h3>
+            <canvas id="bodyChart" width="400" height="300"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Settings -->
+      <div class="content hidden" id="settings">
+        <div class="card">
+          <div class="card-header">
+            <i class="fas fa-cog"></i> Ajustes y Exportación
+          </div>
+          <div class="card-body">
+            <div style="display: flex; gap: 1rem; margin-bottom: 2rem;">
+              <button class="btn btn-primary" onclick="exportCSV()">
+                <i class="fas fa-file-export"></i> Exportar CSV
+              </button>
+              <button class="btn btn-danger" onclick="resetAll()">
+                <i class="fas fa-trash"></i> Resetear Datos
+              </button>
+              <button class="btn btn-success" onclick="window.print()">
+                <i class="fas fa-print"></i> Imprimir
+              </button>
+            </div>
+            <p><i class="fas fa-info-circle"></i> Todos los datos se guardan localmente en tu navegador (localStorage).</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// =============================================
+// DATOS Y CONFIGURACIÓN
+// =============================================
+
+// Plantilla de semana completa
+const baseWeek = [
+  {
+    day: "Lunes – Entrenamiento A (Pecho/Hombro/Tríceps)",
+    ex: [
+      "Press de Banca Plano — 4×6–8 reps — Rest 2–3 min",
+      "Press militar sentado multipower — 4×6–8 reps — Rest 2–3 min",
+      "Press inclinado mancuernas — 3×12 reps — Rest 60 s",
+      "Apertura en máquina — 3×20–12 reps — Rest 30 s",
+      "Press en máquina negativas forzadas — 2-3 series",
+      "Elevaciones laterales — 3×12 reps — Rest 30-60 s",
+      "Press en máquina negativa forzada — 2-3 series",
+      "Press francés — 4×6–8 reps — Rest 2–3 min"
+    ]
+  },
+  {
+    day: "Martes – Entrenamiento B (Espalda/Bíceps/Posterior)",
+    ex: [
+      "Dominadas o Jalones frontales — 4×6–8 reps — Rest 2–3 min",
+      "Remo con mancuerna — 4×6–8 reps — Rest 2–3 min",
+      "Rack pull — 3×12 reps — Rest 60 s",
+      "Jalón agarre neutro — 3×12 reps — Rest 60 s",
+      "Remo con barra — 3×12 reps — Rest 60 s",
+      "Remo Gironda sentado — 3×12 reps — Rest 60 s",
+      "Posterior hombro en máquina — 5×12 reps — Rest 60 s",
+      "Curl con barra — 4×6–8 reps — Rest 2–3 min",
+      "Curl predicador — 3×12 reps — Rest 60 s"
+    ]
+  },
+  {
+    day: "Miércoles – Entrenamiento C (Pecho/Hombro/Tríceps)",
+    ex: [
+      "Press militar sentado multipower — 4×6–8 reps — Rest 2–3 min",
+      "Press de Banca Plano — 4×6–8 reps — Rest 2–3 min",
+      "Elevaciones laterales — 3×12 reps — Rest 30-60 s",
+      "Press en máquina negativa forzada — 2-3 series",
+      "Press de Banca inclinado — 3×12 reps — Rest 60 s",
+      "Apertura en máquina — 3×20–12 reps — Rest 30 s",
+      "Press en máquina negativas forzadas — 2-3 series",
+      "Press francés con mancuerna a una mano — 4×6–8 reps — Rest 2–3 min"
+    ]
+  },
+  {
+    day: "Jueves – Piernas (Fuerza + Volumen)",
+    ex: [
+      "Sentadilla libre — 4×6–8 reps — Rest 2–3 min",
+      "Peso muerto sumo — 4×6–8 reps — Rest 2–3 min",
+      "Sentadilla hack — 4×12 reps — Rest 60 s",
+      "Prensa — 4×20–12 reps — Rest 30 s",
+      "Curl femoral tumbado — 4×al fallo (>10 reps) — Rest 60 s",
+      "Leg extensión — 1×100 reps — Rest según fatiga"
+    ]
+  },
+  {
+    day: "Viernes – Entrenamiento B (Espalda/Bíceps)",
+    ex: [
+      "Dominadas o Jalones frontales — 4×6–8 reps — Rest 2–3 min",
+      "Remo con mancuerna — 4×6–8 reps — Rest 2–3 min",
+      "Jalón agarre neutro — 3×12 reps — Rest 60 s",
+      "Remo con barra — 3×12 reps — Rest 60 s",
+      "Remo Gironda sentado — 3×12 reps — Rest 60 s",
+      "Posterior hombro en máquina — 5×12 reps — Rest 60 s",
+      "Curl con barra — 4×6–8 reps — Rest 2–3 min",
+      "Curl predicador — 3×12 reps — Rest 60 s"
+    ]
+  },
+  {
+    day: "Sábado – Sesión Aeróbica Triatlón",
+    ex: [
+      "Sesión combinada de triatlón",
+      "Natación técnica",
+      "Ciclismo fondo", 
+      "Carrera continua",
+      "Transiciones y estiramientos"
+    ]
+  },
+  {
+    day: "Domingo – Sesión Aeróbica Triatlón",
+    ex: [
+      "Sesión combinada de triatlón",
+      "Natación técnica",
+      "Ciclismo fondo",
+      "Carrera continua",
+      "Transiciones y estiramientos"
+    ]
+  }
+];
+
+// Días de la semana
+const days = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"];
+
+// =============================================
+// INICIALIZACIÓN
+// =============================================
+
+document.addEventListener('DOMContentLoaded', function() {
+  initializeNavigation();
+  initializeWeekSelector();
+  initializeDietSystem();
+  initializeBodyStats();
+  loadWeek(1);
+});
+
+// =============================================
+// SISTEMA DE DIETA COMPLETO - POR SEMANAS, DÍAS Y COMIDAS
+// =============================================
+
+let currentDietOption = 1;
+let currentDietWeek = 1;
+let currentDietDay = 0; // 0 = Lunes
+
+function initializeDietSystem() {
+  initializeDietWeekSelector();
+  initializeDietDaySelector();
+  selectDietOption(1);
+  loadDietDay(currentDietWeek, currentDietDay);
+}
+
+function initializeDietWeekSelector() {
+  const dietWeekSelect = document.getElementById("dietWeekSelect");
+  for(let i = 1; i <= 12; i++) {
+    const opt = document.createElement("option");
+    opt.value = i;
+    opt.textContent = "Semana " + i;
+    dietWeekSelect.appendChild(opt);
+  }
+  dietWeekSelect.addEventListener("change", function() {
+    currentDietWeek = parseInt(this.value);
+    loadDietDay(currentDietWeek, currentDietDay);
+  });
+}
+
+function initializeDietDaySelector() {
+  const dietDaySelect = document.getElementById("dietDaySelect");
+  dietDaySelect.addEventListener("change", function() {
+    currentDietDay = parseInt(this.value);
+    loadDietDay(currentDietWeek, currentDietDay);
+  });
+}
+
+function selectDietOption(option) {
+  currentDietOption = option;
+  
+  // Actualizar selección visual
+  document.querySelectorAll('.diet-option').forEach((opt, index) => {
+    if (index + 1 === option) {
+      opt.classList.add('selected');
+    } else {
+      opt.classList.remove('selected');
+    }
+  });
+  
+  // Mostrar/ocultar contenido
+  document.querySelectorAll('.diet-option-content').forEach((content, index) => {
+    if (index + 1 === option) {
+      content.classList.remove('hidden');
+    } else {
+      content.classList.add('hidden');
+    }
+  });
+  
+  updateProgressSummary();
+  saveDietProgress();
+}
+
+function toggleMealItem(checkbox) {
+  const mealItem = checkbox.closest('.meal-item');
+  if (checkbox.checked) {
+    mealItem.classList.add('completed');
+  } else {
+    mealItem.classList.remove('completed');
+  }
+  updateProgressSummary();
+  saveDietProgress();
+}
+
+function loadDietDay(weekNum, dayIndex) {
+  currentDietWeek = weekNum;
+  currentDietDay = dayIndex;
+  
+  // Actualizar selectores
+  document.getElementById("dietWeekSelect").value = weekNum;
+  document.getElementById("dietDaySelect").value = dayIndex;
+  
+  // Actualizar título del día
+  document.querySelector('#diet .card-header').innerHTML = 
+    `<i class="fas fa-apple-alt"></i> Control de Dieta - ${days[dayIndex]} (Semana ${weekNum})`;
+  
+  restoreDietProgress();
+  updateProgressSummary();
+}
+
+function updateProgressSummary() {
+  const meals = ['breakfast', 'snack1', 'lunch', 'snack2', 'dinner'];
+  let completedCount = 0;
+  
+  meals.forEach(meal => {
+    const checkbox = document.querySelector(`input[data-meal="${meal}"][data-option="${currentDietOption}"]`);
+    if (checkbox && checkbox.checked) {
+      completedCount++;
+    }
+  });
+  
+  const completionRate = Math.round((completedCount / meals.length) * 100);
+  
+  // Actualizar resumen
+  document.getElementById('completedMeals').textContent = `${completedCount}/${meals.length}`;
+  document.getElementById('completionRate').textContent = `${completionRate}%`;
+  document.getElementById('currentOption').textContent = `Opción ${currentDietOption}`;
+}
+
+function saveDietProgress() {
+  const dietData = JSON.parse(localStorage.getItem("dietProgress") || "{}");
+  
+  // Crear clave única para semana/día/opción
+  const key = `w${currentDietWeek}d${currentDietDay}o${currentDietOption}`;
+  
+  const progress = {
+    option: currentDietOption,
+    progress: {}
+  };
+  
+  // Guardar estado de checkboxes de comidas completadas
+  document.querySelectorAll('input[data-meal]').forEach(checkbox => {
+    const meal = checkbox.dataset.meal;
+    const option = checkbox.dataset.option;
+    
+    if (parseInt(option) === currentDietOption) {
+      if (!progress.progress[meal]) progress.progress[meal] = {};
+      progress.progress[meal].completed = checkbox.checked;
+    }
+  });
+  
+  // Guardar estado de items individuales
+  document.querySelectorAll('.meal-item').forEach(item => {
+    const itemId = item.dataset.item;
+    const checkbox = item.querySelector('input[type="checkbox"]');
+    if (checkbox && checkbox.checked) {
+      if (!progress.progress.items) progress.progress.items = {};
+      progress.progress.items[itemId] = true;
+    }
+  });
+  
+  // Guardar notas
+  document.querySelectorAll('.meal-notes textarea').forEach(textarea => {
+    const meal = textarea.dataset.meal;
+    const option = textarea.dataset.option;
+    
+    if (parseInt(option) === currentDietOption && textarea.value) {
+      if (!progress.progress[meal]) progress.progress[meal] = {};
+      progress.progress[meal].notes = textarea.value;
+    }
+  });
+  
+  dietData[key] = progress;
+  localStorage.setItem("dietProgress", JSON.stringify(dietData));
+  
+  updateProgressSummary();
+}
+
+function restoreDietProgress() {
+  const dietData = JSON.parse(localStorage.getItem("dietProgress") || "{}");
+  const key = `w${currentDietWeek}d${currentDietDay}o${currentDietOption}`;
+  const dayData = dietData[key];
+  
+  if (!dayData) return;
+  
+  // Restaurar opción
+  if (dayData.option) {
+    selectDietOption(dayData.option);
+  }
+  
+  // Restaurar checkboxes de comidas completadas
+  if (dayData.progress) {
+    Object.keys(dayData.progress).forEach(meal => {
+      if (meal !== 'items') {
+        const checkbox = document.querySelector(`input[data-meal="${meal}"][data-option="${currentDietOption}"]`);
+        if (checkbox) {
+          checkbox.checked = dayData.progress[meal].completed || false;
+        }
+        
+        // Restaurar notas
+        const textarea = document.querySelector(`textarea[data-meal="${meal}"][data-option="${currentDietOption}"]`);
+        if (textarea && dayData.progress[meal].notes) {
+          textarea.value = dayData.progress[meal].notes;
+        }
+      }
+    });
+    
+    // Restaurar items individuales
+    if (dayData.progress.items) {
+      Object.keys(dayData.progress.items).forEach(itemId => {
+        const item = document.querySelector(`[data-item="${itemId}"]`);
+        if (item) {
+          const checkbox = item.querySelector('input[type="checkbox"]');
+          if (checkbox) {
+            checkbox.checked = true;
+            item.classList.add('completed');
+          }
+        }
+      });
+    }
+  }
+  
+  updateProgressSummary();
+}
+
+// =============================================
+// NAVEGACIÓN
+// =============================================
+
+function initializeNavigation() {
+  const buttons = document.querySelectorAll('.tab-btn');
+  const sections = document.querySelectorAll('.content');
+  
+  buttons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      buttons.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const tab = btn.dataset.tab;
+      sections.forEach(sec => sec.classList.toggle('hidden', sec.id !== tab));
+      
+      document.getElementById('currentTabTitle').textContent = 
+        btn.textContent.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ ]/g, '').trim();
+      
+      if(tab === 'charts') {
+        setTimeout(initializeCharts, 100);
+      } else if(tab === 'diet') {
+        updateProgressSummary();
+      }
+    });
+  });
+}
+
+// =============================================
+// PLANIFICADOR SEMANAL
+// =============================================
+
+function initializeWeekSelector() {
+  const weekSelect = document.getElementById("weekSelect");
+  for(let i = 1; i <= 12; i++) {
+    const opt = document.createElement("option");
+    opt.value = i;
+    opt.textContent = "Semana " + i;
+    weekSelect.appendChild(opt);
+  }
+  weekSelect.addEventListener("change", () => loadWeek(parseInt(weekSelect.value)));
+}
+
+function createDayBlock(dayObj, weekNum, dayIndex) {
+  const div = document.createElement("div");
+  div.className = "day-block";
+  
+  const header = document.createElement("div");
+  header.className = "day-header";
+  header.innerHTML = `<i class="fas fa-dumbbell"></i> ${dayObj.day}`;
+  div.appendChild(header);
+  
+  const content = document.createElement("div");
+  content.className = "day-content";
+  
+  const table = document.createElement("table");
+  table.className = "exercise-table";
+  table.innerHTML = `
+    <tr>
+      <th>Ejercicio</th>
+      <th>Series/Reps</th>
+      <th>Peso Usado</th>
+      <th>Notas</th>
+    </tr>
+  `;
+  
+  dayObj.ex.forEach((ex, exIndex) => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${ex}</td>
+      <td><input type="text" data-week="${weekNum}" data-day="${dayIndex}" data-ex="${exIndex}" data-col="series" oninput="saveTraining()"></td>
+      <td><input type="text" data-week="${weekNum}" data-day="${dayIndex}" data-ex="${exIndex}" data-col="peso" oninput="saveTraining()"></td>
+      <td><textarea rows="2" data-week="${weekNum}" data-day="${dayIndex}" data-ex="${exIndex}" data-col="nota" oninput="saveTraining()"></textarea></td>
+    `;
+    table.appendChild(tr);
+  });
+  
+  content.appendChild(table);
+  
+  // Añadir sección aeróbica para SÁBADO y DOMINGO
+  if ([5, 6].includes(dayIndex)) {
+    const aerobicSection = document.createElement("div");
+    aerobicSection.className = "aerobic-section";
+    aerobicSection.innerHTML = `
+      <div class="aerobic-toggle">
+        <input type="checkbox" id="aerobic-${weekNum}-${dayIndex}" 
+               data-week="${weekNum}" data-day="${dayIndex}" 
+               onchange="toggleAerobic(this)">
+        <label for="aerobic-${weekNum}-${dayIndex}">🏊‍♂️ ¿Ejercicio aeróbico?</label>
+      </div>
+      <div class="aerobic-exercises" id="aerobic-exercises-${weekNum}-${dayIndex}">
+        <div class="aerobic-exercises-container"></div>
+        <button type="button" class="btn btn-success" onclick="addAerobicExercise(${weekNum}, ${dayIndex})">
+          <i class="fas fa-plus"></i> Añadir ejercicio aeróbico
+        </button>
+      </div>
+    `;
+    content.appendChild(aerobicSection);
+  }
+  
+  div.appendChild(content);
+  return div;
+}
+
+function loadWeek(num) {
+  const weekContainer = document.getElementById("weekContainer");
+  weekContainer.innerHTML = "";
+  baseWeek.forEach((day, index) => {
+    weekContainer.appendChild(createDayBlock(day, num, index));
+  });
+  restoreTraining(num);
+  restoreAerobicData(num);
+}
+
+// =============================================
+// ENTRENAMIENTO - GUARDAR Y CARGAR
+// =============================================
+
+function saveTraining() {
+  const inputs = document.querySelectorAll(".exercise-table input, .exercise-table textarea");
+  const data = Array.from(inputs).map(el => ({
+    w: el.dataset.week,
+    d: el.dataset.day, 
+    e: el.dataset.ex,
+    c: el.dataset.col,
+    v: el.value
+  }));
+  localStorage.setItem("trainData", JSON.stringify(data));
+}
+
+function restoreTraining(weekNum) {
+  const data = JSON.parse(localStorage.getItem("trainData") || "[]");
+  data.forEach(item => {
+    if(parseInt(item.w) !== weekNum) return;
+    const el = document.querySelector(`[data-week='${item.w}'][data-day='${item.d}'][data-ex='${item.e}'][data-col='${item.c}']`);
+    if(el) el.value = item.v;
+  });
+}
+
+// =============================================
+// EJERCICIOS AERÓBICOS
+// =============================================
+
+function toggleAerobic(checkbox) {
+  const weekNum = checkbox.dataset.week;
+  const dayIndex = checkbox.dataset.day;
+  const exercisesDiv = document.getElementById(`aerobic-exercises-${weekNum}-${dayIndex}`);
+  
+  if (checkbox.checked) {
+    exercisesDiv.classList.add('show');
+    addAerobicExercise(weekNum, dayIndex);
+  } else {
+    exercisesDiv.classList.remove('show');
+    const container = exercisesDiv.querySelector('.aerobic-exercises-container');
+    container.innerHTML = '';
+  }
+  saveAerobicData();
+}
+
+function addAerobicExercise(weekNum, dayIndex) {
+  const container = document.querySelector(`#aerobic-exercises-${weekNum}-${dayIndex} .aerobic-exercises-container`);
+  const exerciseCount = container.children.length;
+  
+  if (exerciseCount >= 3) {
+    alert("Máximo 3 ejercicios aeróbicos por día");
+    return;
+  }
+
+  const exerciseDiv = document.createElement("div");
+  exerciseDiv.className = "aerobic-exercise";
+  exerciseDiv.innerHTML = `
+    <select data-week="${weekNum}" data-day="${dayIndex}" data-index="${exerciseCount}" data-type="sport" onchange="saveAerobicData()">
+      <option value="">Selecciona deporte</option>
+      <option value="piscina">🏊 Piscina/Natación</option>
+      <option value="carrera">🏃 Carrera</option>
+      <option value="bici">🚴 Bici</option>
+    </select>
+    <input type="text" placeholder="Tiempo (ej: 45min)" data-week="${weekNum}" data-day="${dayIndex}" data-index="${exerciseCount}" data-type="time" oninput="saveAerobicData()">
+    <input type="text" placeholder="Distancia (ej: 5km)" data-week="${weekNum}" data-day="${dayIndex}" data-index="${exerciseCount}" data-type="distance" oninput="saveAerobicData()">
+    <input type="text" placeholder="Notas" data-week="${weekNum}" data-day="${dayIndex}" data-index="${exerciseCount}" data-type="notes" oninput="saveAerobicData()">
+    <button type="button" class="remove-aerobic" onclick="this.parentElement.remove(); saveAerobicData();">✕</button>
+  `;
+  container.appendChild(exerciseDiv);
+  saveAerobicData();
+}
+
+function saveAerobicData() {
+  const aerobicData = [];
+  
+  document.querySelectorAll('.aerobic-exercise').forEach(exerciseDiv => {
+    const inputs = exerciseDiv.querySelectorAll('select, input[type="text"]');
+    const exercise = {};
+    
+    inputs.forEach(input => {
+      if (!exercise.week) exercise.week = input.dataset.week;
+      if (!exercise.day) exercise.day = input.dataset.day;
+      if (!exercise.index) exercise.index = input.dataset.index;
+      exercise[input.dataset.type] = input.value;
+    });
+    
+    if (exercise.sport) {
+      aerobicData.push(exercise);
+    }
+  });
+  
+  document.querySelectorAll('.aerobic-toggle input[type="checkbox"]').forEach(checkbox => {
+    const weekNum = checkbox.dataset.week;
+    const dayIndex = checkbox.dataset.day;
+    const isActive = checkbox.checked;
+    
+    if (isActive) {
+      aerobicData.push({
+        week: weekNum,
+        day: dayIndex,
+        type: 'toggle',
+        active: true
+      });
+    }
+  });
+  
+  localStorage.setItem("aerobicData", JSON.stringify(aerobicData));
+}
+
+function restoreAerobicData(weekNum) {
+  const data = JSON.parse(localStorage.getItem("aerobicData") || "[]");
+  
+  data.forEach(item => {
+    if (item.type === 'toggle' && parseInt(item.week) === weekNum) {
+      const checkbox = document.querySelector(`#aerobic-${item.week}-${item.day}`);
+      if (checkbox) {
+        checkbox.checked = item.active;
+        toggleAerobic(checkbox);
+      }
+    } else if (parseInt(item.week) === weekNum) {
+      const container = document.querySelector(`#aerobic-exercises-${item.week}-${item.day} .aerobic-exercises-container`);
+      if (container) {
+        let exerciseDiv = container.children[item.index];
+        if (!exerciseDiv) {
+          addAerobicExercise(parseInt(item.week), parseInt(item.day));
+          exerciseDiv = container.children[item.index];
+        }
+        
+        if (exerciseDiv) {
+          exerciseDiv.querySelector('[data-type="sport"]').value = item.sport || '';
+          exerciseDiv.querySelector('[data-type="time"]').value = item.time || '';
+          exerciseDiv.querySelector('[data-type="distance"]').value = item.distance || '';
+          exerciseDiv.querySelector('[data-type="notes"]').value = item.notes || '';
+        }
+      }
+    }
+  });
+}
+
+// =============================================
+// ESTADÍSTICAS CORPORALES
+// =============================================
+
+const bodyStatsCategories = [
+  {
+    title: "Mediciones Básicas",
+    icon: "fas fa-ruler",
+    stats: [
+      { label: "Fecha", key: "fecha", placeholder: "dd/mm/aaaa" },
+      { label: "Peso (kg)", key: "peso" },
+      { label: "Altura (cm)", key: "altura" }
+    ]
+  },
+  {
+    title: "Composición Corporal", 
+    icon: "fas fa-weight",
+    stats: [
+      { label: "% Grasa Corporal", key: "grasa" },
+      { label: "% Agua", key: "agua" },
+      { label: "Masa Muscular (kg)", key: "muscle_mass" },
+      { label: "Masa Ósea (kg)", key: "bone_mass" }
+    ]
+  },
+  {
+    title: "Perímetros (cm)",
+    icon: "fas fa-ruler-combined", 
+    stats: [
+      { label: "Cintura", key: "cintura" },
+      { label: "Pecho", key: "pecho" },
+      { label: "Brazo", key: "brazo" },
+      { label: "Pierna", key: "pierna" }
+    ]
+  },
+  {
+    title: "Métricas Avanzadas",
+    icon: "fas fa-brain",
+    stats: [
+      { label: "BMR (kcal)", key: "bmr" },
+      { label: "Muscle Rate", key: "muscle_rate" },
+      { label: "Protein Rate", key: "protein_rate" },
+      { label: "Metabolic Age", key: "metabolic_age" }
+    ]
+  },
+  {
+    title: "Grasa",
+    icon: "fas fa-percentage",
+    stats: [
+      { label: "Grasa Visceral", key: "visceral_fat" },
+      { label: "Grasa Subcutánea", key: "subcutaneous_fat" },
+      { label: "Peso Estándar", key: "standard_weight" },
+      { label: "Peso sin Masa", key: "weight_without_mass" }
+    ]
+  }
+];
+
+function initializeBodyStats() {
+  const grid = document.getElementById("bodyStatsGrid");
+  grid.innerHTML = "";
+  
+  bodyStatsCategories.forEach(category => {
+    const card = document.createElement("div");
+    card.className = "stat-card";
+    card.innerHTML = `
+      <h4><i class="${category.icon}"></i> ${category.title}</h4>
+      ${category.stats.map(stat => `
+        <div class="stat-row">
+          <span class="stat-label">${stat.label}</span>
+          <div class="stat-value">
+            <input type="text" data-col="${stat.key}" placeholder="${stat.placeholder || ''}" oninput="saveBody()">
+          </div>
+        </div>
+      `).join('')}
+    `;
+    grid.appendChild(card);
+  });
+  
+  restoreBody();
+}
+
+let bodyRowCount = 0;
+
+function addBodyRow() {
+  bodyRowCount++;
+  const grid = document.getElementById("bodyStatsGrid");
+  
+  bodyStatsCategories.forEach(category => {
+    const card = grid.querySelector(`.stat-card h4:contains("${category.title}")`)?.parentElement;
+    if (card) {
+      category.stats.forEach(stat => {
+        const input = card.querySelector(`input[data-col="${stat.key}"]`);
+        if (input) {
+          input.value = ""; // Limpiar para nuevo registro
+        }
+      });
+    }
+  });
+  
+  saveBody();
+}
+
+function saveBody() {
+  const data = {};
+  document.querySelectorAll('#bodyStatsGrid input[data-col]').forEach(input => {
+    data[input.dataset.col] = input.value;
+  });
+  
+  const allData = JSON.parse(localStorage.getItem("bodyData") || "[]");
+  allData.push({...data, id: Date.now()});
+  localStorage.setItem("bodyData", JSON.stringify(allData));
+}
+
+function restoreBody() {
+  const allData = JSON.parse(localStorage.getItem("bodyData") || "[]");
+  if (allData.length > 0) {
+    const latest = allData[allData.length - 1];
+    document.querySelectorAll('#bodyStatsGrid input[data-col]').forEach(input => {
+      input.value = latest[input.dataset.col] || "";
+    });
+  }
+}
+
+// =============================================
+// GRÁFICAS
+// =============================================
+
+function initializeCharts() {
+  if (!window.Chart) {
+    const script = document.createElement('script');
+    script.src = 'https://cdn.jsdelivr.net/npm/chart.js';
+    script.onload = drawCharts;
+    document.head.appendChild(script);
+  } else {
+    drawCharts();
+  }
+}
+
+function drawCharts() {
+  // Implementación básica de gráficas
+  const volumeCtx = document.getElementById('volumeChart')?.getContext('2d');
+  const dietCtx = document.getElementById('dietChart')?.getContext('2d');
+  const aerobicCtx = document.getElementById('aerobicChart')?.getContext('2d');
+  const bodyCtx = document.getElementById('bodyChart')?.getContext('2d');
+  
+  // Gráfica de volumen de ejemplo
+  if (volumeCtx) {
+    new Chart(volumeCtx, {
+      type: 'bar',
+      data: {
+        labels: ['Sem 1', 'Sem 2', 'Sem 3', 'Sem 4'],
+        datasets: [{
+          label: 'Ejercicios registrados',
+          data: [12, 15, 18, 20],
+          backgroundColor: '#1e6091'
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          title: { display: true, text: 'Volumen de entrenamiento' }
+        }
+      }
+    });
+  }
+  
+  // Gráfica de dieta de ejemplo
+  if (dietCtx) {
+    new Chart(dietCtx, {
+      type: 'doughnut',
+      data: {
+        labels: ['Cumplido', 'No cumplido'],
+        datasets: [{
+          data: [75, 25],
+          backgroundColor: ['#2a9d8f', '#e76f51']
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          title: { display: true, text: 'Cumplimiento de dieta' }
+        }
+      }
+    });
+  }
+}
+
+// =============================================
+// UTILIDADES
+// =============================================
+
+function exportCSV() {
+  let csv = "Tipo,Semana,Día,Ejercicio,Series/Peso/Notas\n";
+  
+  // Datos de entrenamiento
+  const train = JSON.parse(localStorage.getItem("trainData") || "[]");
+  train.forEach(d => {
+    csv += `Entreno,${d.w},${parseInt(d.d)+1},Ex${parseInt(d.e)+1},${d.c}:${d.v}\n`;
+  });
+
+  // Datos de dieta - NUEVO FORMATO COMPLETO
+  csv += "\nTipo,Semana,Día,Opción,Comida,Completada,Notas,ItemsCompletados\n";
+  const dietProgress = JSON.parse(localStorage.getItem("dietProgress") || "{}");
+  
+  Object.keys(dietProgress).forEach(key => {
+    const match = key.match(/w(\d+)d(\d+)o(\d+)/);
+    if (match) {
+      const week = match[1];
+      const day = match[2];
+      const option = match[3];
+      const data = dietProgress[key];
+      const dayName = days[parseInt(day)] || `Día${parseInt(day)+1}`;
+      
+      const meals = ['breakfast', 'snack1', 'lunch', 'snack2', 'dinner'];
+      meals.forEach(meal => {
+        const mealData = data.progress[meal];
+        if (mealData) {
+          const mealNames = {
+            breakfast: 'Desayuno',
+            snack1: 'Media Mañana', 
+            lunch: 'Comida',
+            snack2: 'Merienda',
+            dinner: 'Cena'
+          };
+          
+          csv += `Dieta,${week},${dayName},${option},${mealNames[meal]},${mealData.completed ? 'Sí' : 'No'},"${mealData.notes || ''}","${getCompletedItems(data.progress.items, meal, option)}"\n`;
+        }
+      });
+    }
+  });
+
+  // Datos corporales
+  csv += "\nTipo,Fecha,Peso,Altura,%Grasa,%Agua,MasaMuscular,MasaOsea,Cintura,Pecho,Brazo,Pierna,BMR,MuscleRate,ProteinRate,MetabolicAge,GrasaVisceral,GrasaSubcutanea,PesoEstandar,PesoSinMasa\n";
+  const body = JSON.parse(localStorage.getItem("bodyData") || "[]");
+  body.forEach(b => {
+    csv += `Body,${b.fecha || ""},${b.peso || ""},${b.altura || ""},${b.grasa || ""},${b.agua || ""},${b.muscle_mass || ""},${b.bone_mass || ""},${b.cintura || ""},${b.pecho || ""},${b.brazo || ""},${b.pierna || ""},${b.bmr || ""},${b.muscle_rate || ""},${b.protein_rate || ""},${b.metabolic_age || ""},${b.visceral_fat || ""},${b.subcutaneous_fat || ""},${b.standard_weight || ""},${b.weight_without_mass || ""}\n`;
+  });
+
+  // Datos aeróbicos
+  csv += "\nTipo,Semana,Día,Deporte,Tiempo,Distancia,Notas\n";
+  const aerobic = JSON.parse(localStorage.getItem("aerobicData") || "[]");
+  aerobic.forEach(a => {
+    if (a.sport) {
+      const sportNames = { piscina: "Natación", carrera: "Carrera", bici: "Ciclismo" };
+      csv += `Aeróbico,${a.week},${parseInt(a.day)+1},${sportNames[a.sport] || a.sport},${a.time || ""},${a.distance || ""},${a.notes || ""}\n`;
+    }
+  });
+
+  const blob = new Blob([csv], {type: "text/csv;charset=utf-8;"});
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = "triathlon_dashboard_data.csv";
+  link.click();
+}
+
+function getCompletedItems(itemsData, meal, option) {
+  if (!itemsData) return "";
+  
+  const completed = [];
+  Object.keys(itemsData).forEach(itemId => {
+    if (itemId.includes(`${meal}-${option}`)) {
+      completed.push(itemId);
+    }
+  });
+  
+  return completed.join(', ');
+}
+
+function resetAll() {
+  if(confirm("¿Seguro que quieres borrar todos los datos?")) {
+    localStorage.removeItem("trainData");
+    localStorage.removeItem("dietProgress");
+    localStorage.removeItem("bodyData");
+    localStorage.removeItem("aerobicData");
+    alert("Datos borrados. Recarga la página.");
+    location.reload();
+  }
+}
+</script>
+</body>
+</html>
